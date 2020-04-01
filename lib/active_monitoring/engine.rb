@@ -11,6 +11,16 @@ module ActiveMonitoring
 
     ActiveSupport.on_load(:action_controller) do
       ActionController::Base.prepend(::ActiveMonitoring::CoreExtensions::ActionController::Instrumentation)
+
+      ActiveMonitoring::Notifications.subscribe("process_action.action_controller") do |name, start, finish, _id, payload|
+        Metric.create(
+          name: name,
+          value: finish - start,
+          request_id: payload[:request_id],
+          location: "#{payload[:controller]}##{payload[:action]}",
+          created_at: finish
+        )
+      end
     end
   end
 end

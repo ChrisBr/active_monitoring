@@ -10,7 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_31_195731) do
+ActiveRecord::Schema.define(version: 2020_04_01_191741) do
+
+  create_table "active_monitoring_metrics", force: :cascade do |t|
+    t.string "name"
+    t.string "request_id"
+    t.string "location"
+    t.string "sql_query"
+    t.integer "value"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "books", force: :cascade do |t|
     t.string "name"
