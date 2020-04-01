@@ -1,5 +1,6 @@
 require_relative "core_extensions/action_controller"
 require_relative "core_extensions/active_record"
+require_relative "sql_query"
 
 module ActiveMonitoring
   class Engine < ::Rails::Engine
@@ -20,6 +21,17 @@ module ActiveMonitoring
           location: "#{payload[:controller]}##{payload[:action]}",
           created_at: finish
         )
+      end
+
+      ActiveMonitoring::Notifications.subscribe("sql.active_record") do |name, start, finish, _id, payload|
+        if ActiveMonitoring::SqlQuery.new(name: payload[:name], query: payload[:sql]).track?
+          Metric.create(
+            name: name,
+            value: finish - start,
+            sql_query: payload[:sql],
+            created_at: finish
+          )
+        end
       end
     end
   end

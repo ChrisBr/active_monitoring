@@ -47,22 +47,15 @@ RSpec.describe "ActionController metrics", type: :request do
 
   scenario "Instruments sql.active_record" do
     travel_to(Time.zone.local(2020, 1, 1))
-    events = []
-    ActiveMonitoring::Notifications.subscribe("sql.active_record") do |name, start, finish, id, payload|
-      events << { name: name, start: start, finish: finish, id: id, payload: payload }
-    end
 
     post books_path
 
-    expect(events).to include(
-      a_hash_including(
+    expect(ActiveMonitoring::Metric.all).to include(
+      an_object_having_attributes(
         name: "sql.active_record",
-        start: Time.zone.local(2020, 1, 1),
-        finish: Time.zone.local(2020, 1, 1),
-        payload: a_hash_including(
-          sql: %(INSERT INTO "books" ("name", "created_at", "updated_at") VALUES (?, ?, ?)),
-          name: "Book Create"
-        )
+        value: 0,
+        created_at: Time.zone.local(2020, 1, 1),
+        sql_query: %(INSERT INTO "books" ("name", "created_at", "updated_at") VALUES (?, ?, ?))
       )
     )
   end
