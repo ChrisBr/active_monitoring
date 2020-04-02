@@ -1,0 +1,23 @@
+<h1>Dashboard</h1>
+
+<h2>Response time</h2>
+<ul>
+  <li>90th Percentile: <%= @dashboard.percentile(9) %><li>
+  <li>50th Percentile: <%= @dashboard.percentile(5) %><li>
+</ul>
+
+<h2>Slow queriess</h2>
+<table>
+  <tr>
+    <th>SQL</th>
+    <th>Location</th>
+    <th>Time</th>
+  </tr>
+  <% @dashboard.slow_sql_queries.each do |metric| %>
+  <tr>
+    <td><%= metric.sql_query %></td>
+    <td><%= metric.location %></td>
+    <td><%= metric.value %></td>
+  </tr>
+  <% end %>
+<table>
