@@ -34,7 +34,7 @@ RSpec.describe "ActionController metrics", type: :request do
         name: "sql.active_record",
         value: 0,
         created_at: Time.zone.local(2020, 1, 1),
-        sql_query: %(INSERT INTO "books" ("name", "created_at", "updated_at") VALUES (?, ?, ?)),
+        sql_query: %(INSERT INTO "books" ("name", "created_at", "updated_at") VALUES (xxx)),
         request_id: response.headers["X-Request-Id"],
         location: "BooksController#create"
       )

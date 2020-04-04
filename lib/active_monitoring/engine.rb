@@ -30,12 +30,13 @@ module ActiveMonitoring
       end
 
       ActiveMonitoring::Notifications.subscribe("sql.active_record") do |name, start, finish, _id, payload|
-        if ActiveMonitoring::SqlQuery.new(name: payload[:name], query: payload[:sql]).track?
+        query = ActiveMonitoring::SqlQuery.new(name: payload[:name].dup, query: payload[:sql].dup)
+        if query.track?
           Metric.create(
             name: name,
             value: finish - start,
             request_id: Current.request_id,
-            sql_query: payload[:sql],
+            sql_query: query.normalized_query,
             location: Current.location,
             created_at: finish
           )

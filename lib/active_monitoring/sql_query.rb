@@ -1,4 +1,6 @@
 require_relative "sql_tracker"
+require_relative "sql_normalizer"
+
 module ActiveMonitoring
   class SqlQuery
     def initialize(query:, name:)
@@ -8,6 +10,10 @@ module ActiveMonitoring
 
     def track?
       SqlTracker.new(query: query, name: name).track?
+    end
+
+    def normalized_query
+      SqlNormalizer.new(query: query).to_s
     end
 
     private
